@@ -14,5 +14,4 @@ Pry.start(binding, quiet: true)
 # include grid.point_ops
 # using grid.point_ops
 
-# require './lib/graph_utils'
 # GraphUtils.topo_sort([[dependency, dependent], ...])
