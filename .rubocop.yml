@@ -1,0 +1,29 @@
+AllCops:
+  NewCops: enable
+
+Metrics:
+  Enabled: false
+
+Naming:
+  Enabled: false
+
+Style:
+  Enabled: false
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Layout/SpaceInsideRangeLiteral:
+  Enabled: false
+
+Layout/HeredocIndentation:
+  Enabled: false
+
+Lint/OutOfRangeRegexpRef:
+  Enabled: false
+
+Security/Eval:
+  Enabled: false
