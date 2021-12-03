@@ -3,21 +3,19 @@ require_relative './shared'
 input = File.readlines('day3.input').map(&:chomp)
 
 most_common = ->(values) do
-  counts = values.tally
-  counts.fetch("0", 0) > counts.fetch("1", 0) ? "0" : "1"
+  values.count("0") > values.count("1") ? "0" : "1"
 end
 
 least_common = ->(values) do
-  counts = values.tally
-  counts.fetch("1", 0) < counts.fetch("0", 0) ? "1" : "0"
+  values.count("1") < values.count("0") ? "1" : "0"
 end
 
 # Part 1
 
-bits_by_place = input.map { _1.split("") }.transpose
+bits_by_place = input.map(&:chars).transpose
 
 gamma, epsilon = [most_common, least_common].map do |rule|
-  bits_by_place.map(&rule).join("").to_i(2)
+  bits_by_place.map(&rule).join.to_i(2)
 end
 
 puts gamma * epsilon # 2583164
