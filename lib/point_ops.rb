@@ -61,6 +61,25 @@ PointOps = ->(system = :y_down) do
       def taxicab_distance(to_point = ORIGIN)
         (to_point.x - x).abs + (to_point.y - y).abs
       end
+
+      def line(to_point)
+        unless bearing(to_point) % 45 == 0
+          raise "Line must be orthogonal or diagonal"
+        end
+
+        x_step = x < to_point.x ? 1 : x > to_point.x ? -1 : 0
+        y_step = y < to_point.y ? 1 : y > to_point.y ? -1 : 0
+
+        line = [self]
+        xx, yy = x, y
+        until line[-1] == to_point
+          xx += x_step
+          yy += y_step
+          line << [xx, yy]
+        end
+
+        line
+      end
     end
   end
 end
