@@ -58,6 +58,8 @@ class Proc
       cache = {}
     end
 
+    singleton_class.alias_method :[], :call
+
     self
   end
 end
