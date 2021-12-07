@@ -12,13 +12,7 @@ puts result_1 # 355989
 
 # Part 2
 
-triangular_number = ->(n) do
-  if n == 0
-    0
-  else
-    triangular_number.(n - 1) + n
-  end
-end.memoize
+triangular_number = ->(n) { n * (n + 1) / 2 }
 
 result_2 = (input.min..input.max).map do |t|
   input.sum { triangular_number.((_1 - t).abs) }
