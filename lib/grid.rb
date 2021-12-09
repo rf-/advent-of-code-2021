@@ -1,6 +1,9 @@
+require 'forwardable'
 require 'set'
 
 class Grid
+  extend Forwardable
+
   ORTHOGONAL_NEIGHBORS = [
     [-1, 0],
     [0, -1],
@@ -18,6 +21,8 @@ class Grid
 
   attr_accessor :grid, :default, :mode
   protected :grid=
+
+  def_delegators :@grid, :each
 
   def initialize(system = :y_up, default: nil, mode: :diagonal)
     unless %i[y_up y_down].include?(system)
@@ -90,11 +95,15 @@ class Grid
     end
   end
 
-  def neighbors(x, y)
+  def neighbor_coords(x, y)
     deltas = @mode == :orthogonal ? ORTHOGONAL_NEIGHBORS : DIAGONAL_NEIGHBORS
     deltas.map do |dx, dy|
-      self[x + dx, y + dy]
+      [x + dx, y + dy]
     end
+  end
+
+  def neighbors(x, y)
+    neighbor_coords(x, y).map { self[*_1] }
   end
 
   def visible_neighbors(x, y, &test_opaque)
@@ -108,7 +117,7 @@ class Grid
     end
   end
 
-  def shortest_path(from, to, &block)
+  def shortest_path(from, to, &is_passable)
     to_visit = [[from, []]]
     visited = Set.new
 
@@ -119,7 +128,7 @@ class Grid
       each_neighbor(*at) do |cell, coords|
         next if visited.include?(coords)
         return [*path, coords] if coords == to
-        passable = block.call(cell, coords)
+        passable = is_passable.call(cell, coords)
         if passable
           to_visit << [coords, [*path, coords]]
         end
@@ -127,14 +136,18 @@ class Grid
     end
   end
 
-  def fill(width, values)
-    rows = values.each_slice(width).to_a
+  def fill(rows, &transform_cell_value)
+    transform_cell_value ||= :itself.to_proc
+
     rows = rows.reverse if @system == :y_up
     rows.each_with_index do |row, y|
+      row = row.chars if row.is_a?(String)
       row.each_with_index do |cell, x|
-        self[x, y] = cell
+        self[x, y] = transform_cell_value.(cell)
       end
     end
+
+    self
   end
 
   def bounds
