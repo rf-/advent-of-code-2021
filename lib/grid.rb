@@ -74,6 +74,12 @@ class Grid
     end
   end
 
+  def merge(other)
+    dup.tap do |new_grid|
+      new_grid.grid = @grid.merge(other.grid)
+    end
+  end
+
   def select(&block)
     dup.tap do |new_grid|
       new_grid.grid = @grid.select(&block)
@@ -83,6 +89,12 @@ class Grid
   def map(&block)
     dup.tap do |new_grid|
       new_grid.grid = @grid.map { |k, v| [k, block.call(k, v)] }.to_h
+    end
+  end
+
+  def transform(&block)
+    dup.tap do |new_grid|
+      new_grid.grid = @grid.map { |k, v| block.call(k, v) }.to_h
     end
   end
 
