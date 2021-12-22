@@ -63,3 +63,19 @@ class Proc
     self
   end
 end
+
+class Range
+  def &(other)
+    if exclude_end? != other.exclude_end?
+      raise "Can't intersect closed and open ranges"
+    end
+
+    if exclude_end?
+      return nil if self.end <= other.begin || other.end <= self.begin
+      [self.begin, other.begin].max ... [self.end, other.end].min
+    else
+      return nil if self.end < other.begin || other.end < self.begin
+      [self.begin, other.begin].max .. [self.end, other.end].min
+    end
+  end
+end
